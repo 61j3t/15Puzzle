@@ -10,6 +10,7 @@ A simple and interactive 15 Puzzle game built with Flutter. The objective of the
   - [Installation](#installation)
   - [Usage](#usage)
   - [Game Controls](#game-controls)
+  - [Screenshots](#screenshots)
   - [Contributing](#contributing)
   - [License](#license)
 
@@ -49,6 +50,14 @@ Once the application is running, you can start playing the game by tapping on th
 
 - **New Game**: Resets the game and reshuffles the tiles.
 - **Pause Timer**: Pauses the timer during gameplay.
+
+## Screenshots
+
+Here are some screenshots of the game in action:
+
+![Screenshot 1](screenshot.png)
+
+*Replace `path/to/screenshotX.png` with the actual paths to your screenshot images.*
 
 ## Contributing
 
