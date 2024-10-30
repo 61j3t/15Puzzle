@@ -178,169 +178,151 @@ class _TileGameState extends State<TileGame> {
                 padding: const EdgeInsets.all(14.0),
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: 25,
+                    const SizedBox(height: 25),
+                    GameControls(
+                      resetGame: _resetTimer,
+                      reshuffleTiles: _reshuffleTiles,
+                      pauseTimer: _pauseTimer,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          height: 60,
-                          width: 180,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: buttonColor, // Use constant
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: () {
-                              _resetTimer(); // Reset the timer when starting a new game
-                              _reshuffleTiles(); // Reshuffle the tiles for a new game
-                              // Handle new game action
-                            },
-                            child: const Text(
-                              'New Game',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(113, 0, 0, 0),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 2.0),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const Text('Timer',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.white)),
-                                  Text(_formattedElapsedTime(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 24,
-                                          color: Colors.white)),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const Text('Moves',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.white)),
-                                  Text("$_moveCount", // Display move count
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 24,
-                                          color: Colors.white)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 50),
+                    GameBoard(
+                      tiles: _tiles,
+                      moveTile: _moveTile,
                     ),
-                    SizedBox(
-                      height: 50,
-                    ),
-                    SizedBox(
-                      height: 550,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 500, // Remove or adjust this height
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4,
-                              ),
-                              itemCount: 16,
-                              itemBuilder: (context, index) {
-                                int tileValue = _tiles[index ~/ 4][index % 4];
-                                Color tileDisplayColor = (tileValue ==
-                                            (index + 1) ||
-                                        (index == 15 && tileValue == 16))
-                                    ? Colors
-                                        .green // Change this to your desired color for correct position
-                                    : tileColor; // Use constant for incorrect position
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    _moveTile(
-                                        index); // Call the moveTile method
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Container(
-                                      margin: const EdgeInsets.all(4.0),
-                                      decoration: BoxDecoration(
-                                        color: tileValue == 16
-                                            ? buttonColor
-                                            : tileDisplayColor, // Use the new color logic
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          tileValue == 16 ? '' : '$tileValue',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 44,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 50,
-                            width: double
-                                .infinity, // Make the button take the full width
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: buttonColor, // Use constant
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              onPressed: () {
-                                _pauseTimer(); // Pause the timer
-                                // Handle pause timer action
-                              },
-                              child: const Text('Pause Timer',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24,
-                                      color: Colors.white)),
-                            ),
-                          ),
-                        ],
-                      ),
+                    const SizedBox(height: 50),
+                    TimerAndMovesDisplay(
+                      formattedTime: _formattedElapsedTime(),
+                      moveCount: _moveCount,
                     ),
                   ],
                 ),
               ),
       ),
+    );
+  }
+}
+
+class GameControls extends StatelessWidget {
+  final VoidCallback resetGame;
+  final VoidCallback reshuffleTiles;
+  final VoidCallback pauseTimer;
+
+  const GameControls({
+    Key? key,
+    required this.resetGame,
+    required this.reshuffleTiles,
+    required this.pauseTimer,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            resetGame();
+            reshuffleTiles();
+          },
+          child: const Text('New Game'),
+        ),
+        ElevatedButton(
+          onPressed: pauseTimer,
+          child: const Text('Pause Timer'),
+        ),
+      ],
+    );
+  }
+}
+
+class GameBoard extends StatelessWidget {
+  final List<List<int>> tiles;
+  final Function(int) moveTile;
+
+  const GameBoard({
+    Key? key,
+    required this.tiles,
+    required this.moveTile,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 500,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+        ),
+        itemCount: 16,
+        itemBuilder: (context, index) {
+          int tileValue = tiles[index ~/ 4][index % 4];
+          Color tileDisplayColor =
+              (tileValue == (index + 1) || (index == 15 && tileValue == 16))
+                  ? Colors.green
+                  : _TileGameState.tileColor;
+
+          return GestureDetector(
+            onTap: () {
+              moveTile(index);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Container(
+                margin: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  color: tileValue == 16
+                      ? _TileGameState.buttonColor
+                      : tileDisplayColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    tileValue == 16 ? '' : '$tileValue',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 44,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class TimerAndMovesDisplay extends StatelessWidget {
+  final String formattedTime;
+  final int moveCount;
+
+  const TimerAndMovesDisplay({
+    Key? key,
+    required this.formattedTime,
+    required this.moveCount,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const Text('Timer'),
+            Text(formattedTime),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const Text('Moves'),
+            Text("$moveCount"),
+          ],
+        ),
+      ],
     );
   }
 }
