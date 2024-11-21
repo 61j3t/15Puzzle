@@ -57,8 +57,6 @@ Here are some screenshots of the game in action:
 
 ![Screenshot 1](screenshot.png)
 
-*Replace `path/to/screenshotX.png` with the actual paths to your screenshot images.*
-
 ## Contributing
 
 Contributions are welcome! If you have suggestions for improvements or new features, please fork the repository and submit a pull request.
